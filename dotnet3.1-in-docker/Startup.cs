@@ -27,7 +27,9 @@ namespace dotnet3._1_in_docker
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add CORS policy
+            /*
+              Bezpeènìjší CORS - polovit urèitì requesty jen z urèitých adres
+             */
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOriginsPolicy",

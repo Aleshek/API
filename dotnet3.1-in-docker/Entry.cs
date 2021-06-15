@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-
+/*
+ Mohlo by být sloučeno do 1 třídy -> předěláno na structuru
+ */
 namespace dotnet3._1_in_docker
 {
     public class EntryBase

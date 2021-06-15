@@ -26,6 +26,9 @@ namespace dotnet3._1_in_docker.Controllers
             }
             else
             {
+                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
+                 var response = new {status="failure", reason="invalid input"}
+                 */
                 APIResponse_with_reason response = new APIResponse_with_reason();
                 response.status = "failure";
                 response.reason = "invalid input";
@@ -52,6 +55,9 @@ namespace dotnet3._1_in_docker.Controllers
             }
             else
             {
+                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
+                 var response = new {status="failure", reason="invalid parameter"}
+                 */
                 APIResponse_with_reason response = new APIResponse_with_reason();
                 response.status = "failure";
                 response.reason = "invalid parameter";
@@ -71,6 +77,9 @@ namespace dotnet3._1_in_docker.Controllers
                 return Created("", lead); //201
             } else
             {
+                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
+                 var response = new {status="failure", reason="invalid input"}
+                 */
                 APIResponse_with_reason response = new APIResponse_with_reason();
                 response.status = "failure";
                 response.reason = "invalid input";
@@ -86,12 +95,18 @@ namespace dotnet3._1_in_docker.Controllers
             DBControls.editLeadByID(id, lead, out exit_code);
             Console.WriteLine("* Exitcode: " + exit_code);
             if (exit_code == 0)
-            {            
+            {
+                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
+                 var response = new {status="success"}
+                 */
                 APIResponse response = new APIResponse();
                 response.status = "success";
                 return StatusCode(202, response); // CUSTOM 202
             } else
             {
+                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
+                 var response = new {status="failure", reason="invalid input"}
+                 */
                 APIResponse_with_reason response = new APIResponse_with_reason();
                 response.status = "failure";
                 response.reason = "invalid input";
@@ -107,11 +122,17 @@ namespace dotnet3._1_in_docker.Controllers
             Console.WriteLine("* Exitcode: " + exit_code);
             if(exit_code == 0)
             {
+                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
+                 var response = new {status="success"}
+                 */
                 APIResponse response = new APIResponse();
                 response.status = "success";
                 return Ok(response); //200
             } else
             {
+                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
+                 var response = new {status="failure", reason="invalid input"}
+                 */
                 APIResponse_with_reason response = new APIResponse_with_reason();
                 response.status = "failure";
                 response.reason = "invalid input";

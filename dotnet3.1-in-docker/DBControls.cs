@@ -10,11 +10,18 @@ using System.Threading.Tasks;
 // System.Data.SQLite.SQLiteException      SQL EXCEPTION
 // exil_code:   0=succes | -1=failure
 
+/*
+ - Try Catch by pravděpodobně šlo vylepšit/rozšířit/sloučit pod 1 Try
+ - přesunout connectionString do appsettings.json
+ - naučit se používat Dapper DynamicParameters()
+ - celkově vylepšit Console Logging
+ */
+
 namespace dotnet3._1_in_docker
 {
     public class DBControls
     {       
-        private const string connectionString = "Data Source=LeadsDB.db;Version=3;";
+        private const string connectionString = "Data Source=LeadsDB.db;Version=3;"; // přesunout connectionString do appsettings.json
 
          public static List<Entry> loadLeads(out int exit_code)
         {
@@ -22,7 +29,7 @@ namespace dotnet3._1_in_docker
             {
                 try
                 {
-                    var output = db.Query<Entry>("select * from Leads", new DynamicParameters());
+                    var output = db.Query<Entry>("select * from Leads", new DynamicParameters()); 
                     exit_code = 0;
                     return output.ToList();
                 }
@@ -43,7 +50,7 @@ namespace dotnet3._1_in_docker
                 try
                 {
                     exit_code = 0;
-                    db.Execute("insert into Leads (first_name, last_name, mobile, email, location_type, location_string, status) values (@first_name, @last_name, @mobile, @email, @location_type, @location_string, @status)", lead);
+                    db.Execute("insert into Leads (first_name, last_name, mobile, email, location_type, location_string, status) values (@first_name, @last_name, @mobile, @email, @location_type, @location_string, @status)", lead); //naučit se používat Dapper DynamicParameters()
                 } catch (System.Data.SQLite.SQLiteException e)
                 {
                     exit_code = -1;
@@ -51,7 +58,7 @@ namespace dotnet3._1_in_docker
                 }              
             }
         }
-
+      
         public static Entry fetchLeadByID(int id, out int exit_code)
         {
             using (IDbConnection db = new SQLiteConnection(connectionString))
@@ -59,7 +66,7 @@ namespace dotnet3._1_in_docker
                 try
                 {
                     var output = db.Query<Entry>("select * from Leads where ID=" + id, new DynamicParameters()).ToList();
-                    try
+                    try //ondstanit 2. try
                     {
                         exit_code = 0;
                         return output[0];//
@@ -85,7 +92,7 @@ namespace dotnet3._1_in_docker
             {
                 try
                 {        
-                    int check = db.Execute("update Leads set first_name=@first_name, last_name=@last_name, mobile=@mobile, email=@email, location_type=@location_type, location_string=@location_string, status=@status where id=" + id, lead);
+                    int check = db.Execute("update Leads set first_name=@first_name, last_name=@last_name, mobile=@mobile, email=@email, location_type=@location_type, location_string=@location_string, status=@status where id=" + id, lead); //naučit se používat Dapper DynamicParameters()
                     if (check > 0)
                     {
                         exit_code = 0;
