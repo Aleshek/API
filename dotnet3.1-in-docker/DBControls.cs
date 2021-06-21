@@ -11,10 +11,7 @@ using System.Threading.Tasks;
 // exil_code:   0=succes | -1=failure
 
 /*
- - Try Catch by pravděpodobně šlo vylepšit/rozšířit/sloučit pod 1 Try
- - přesunout connectionString do appsettings.json
- - naučit se používat Dapper DynamicParameters()
- - celkově vylepšit Console Logging
+
  */
 
 namespace dotnet3._1_in_docker
@@ -28,8 +25,8 @@ namespace dotnet3._1_in_docker
             using (IDbConnection db = new SQLiteConnection(connectionString))
             {
                 try
-                {
-                    var output = db.Query<Entry>("select * from Leads", new DynamicParameters()); 
+                {         
+                    var output = db.Query<Entry>("select * from Leads");
                     exit_code = 0;
                     return output.ToList();
                 }
@@ -43,15 +40,31 @@ namespace dotnet3._1_in_docker
         }
 
 
-        public static void saveLeads(Entry lead, out int exit_code)
-        {
+        public static void saveLeads(Entry lead, out int exit_code)              //REMADE WITH DYNAMICPARAMETERS FOR EDUCATIONAL PURPOSES AND TO HAVE ALL METHODS UNITED
+        {                                                                           
             using (IDbConnection db = new SQLiteConnection(connectionString))
             {
                 try
                 {
                     exit_code = 0;
-                    db.Execute("insert into Leads (first_name, last_name, mobile, email, location_type, location_string, status) values (@first_name, @last_name, @mobile, @email, @location_type, @location_string, @status)", lead); //naučit se používat Dapper DynamicParameters()
-                } catch (System.Data.SQLite.SQLiteException e)
+
+                    string sql = "insert into Leads " +
+                        "(first_name, last_name, mobile, email, location_type, location_string, status)" +
+                        " values " +
+                        "(@first_name, @last_name, @mobile, @email, @location_type, @location_string, @status)";
+                    
+                    DynamicParameters parameter = new DynamicParameters();
+                    parameter.Add("@first_name", lead.first_name, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@last_name", lead.last_name, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@mobile", lead.mobile, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@email", lead.email, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@location_type", lead.location_type, DbType.Int32, ParameterDirection.Input);
+                    parameter.Add("@location_string", lead.location_string, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@status", lead.status, DbType.Int32, ParameterDirection.Input);
+
+                    db.Execute(sql, parameter);                }
+
+                catch (System.Data.SQLite.SQLiteException e)
                 {
                     exit_code = -1;
                     Console.WriteLine("saveLeads() ERROR = " + e);
@@ -59,14 +72,19 @@ namespace dotnet3._1_in_docker
             }
         }
       
-        public static Entry fetchLeadByID(int id, out int exit_code)
+        public static Entry fetchLeadByID(int id, out int exit_code) //REMADE WITH DYNAMICPARAMETERS FOR EDUCATIONAL PURPOSES AND TO HAVE ALL METHODS UNITED
         {
             using (IDbConnection db = new SQLiteConnection(connectionString))
             {
                 try
                 {
-                    var output = db.Query<Entry>("select * from Leads where ID=" + id, new DynamicParameters()).ToList();
-                    try //ondstanit 2. try
+                    string sql = "select * from Leads where ID=@ID";
+
+                    DynamicParameters parameter = new DynamicParameters();
+                    parameter.Add("@ID", id, DbType.Int32);
+
+                    var output = db.Query<Entry>(sql, parameter).ToList();
+                    try
                     {
                         exit_code = 0;
                         return output[0];//
@@ -86,14 +104,27 @@ namespace dotnet3._1_in_docker
             }
         }
 
-        public static void editLeadByID(int id, Entry lead, out int exit_code)
+        public static void editLeadByID(int id, Entry lead, out int exit_code) //REMADE WITH DYNAMICPARAMETERS FOR EDUCATIONAL PURPOSES AND TO HAVE ALL METHODS UNITED
         {
             using (IDbConnection db = new SQLiteConnection(connectionString))
             {
                 try
-                {        
-                    int check = db.Execute("update Leads set first_name=@first_name, last_name=@last_name, mobile=@mobile, email=@email, location_type=@location_type, location_string=@location_string, status=@status where id=" + id, lead); //naučit se používat Dapper DynamicParameters()
-                    if (check > 0)
+                {
+                    string sql = "update Leads set first_name=@first_name, last_name=@last_name, mobile=@mobile, email=@email, location_type=@location_type, location_string=@location_string, status=@status where id=@id";
+
+                    DynamicParameters parameter = new DynamicParameters();
+                    parameter.Add("@id", id, DbType.Int32);
+                    parameter.Add("@first_name", lead.first_name, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@last_name", lead.last_name, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@mobile", lead.mobile, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@email", lead.email, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@location_type", lead.location_type, DbType.Int32, ParameterDirection.Input);
+                    parameter.Add("@location_string", lead.location_string, DbType.String, ParameterDirection.Input);
+                    parameter.Add("@status", lead.status, DbType.Int32, ParameterDirection.Input);
+
+                    int rowsAffected = db.Execute(sql, parameter);
+
+                    if (rowsAffected > 0)
                     {
                         exit_code = 0;
                     } else
@@ -110,14 +141,17 @@ namespace dotnet3._1_in_docker
             }
         }
 
-        public static void removeLeadByID(int id, out int exit_code)
+        public static void removeLeadByID(int id, out int exit_code) //REMADE WITH DYNAMICPARAMETERS FOR EDUCATIONAL PURPOSES AND TO HAVE ALL METHODS UNITED
         {
             using (IDbConnection db = new SQLiteConnection(connectionString))
             {
                 try
-                {                    
-                    int check = db.Execute("delete from Leads where id=" + id);
-                    if (check > 0)
+                {
+                    string sql = "delete from Leads where id=@id";
+                    DynamicParameters parameter = new DynamicParameters();
+                    parameter.Add("@id", id, DbType.Int32);
+                    int affectedRows = db.Execute(sql, parameter);
+                    if (affectedRows > 0)
                     {
                         exit_code = 0;
                     } else
@@ -134,15 +168,20 @@ namespace dotnet3._1_in_docker
             }
         }
 
-        public static void markLeadByID(int id, string comment, out int exit_code)
+        public static void markLeadByID(int id, string comment, out int exit_code) //REMADE WITH DYNAMICPARAMETERS FOR EDUCATIONAL PURPOSES AND TO HAVE ALL METHODS UNITED
         {
             using (IDbConnection db = new SQLiteConnection(connectionString))
             {
                 try
                 {
+                    string sql = "update Leads set status=2, communication=@comment where id=@id";
 
-                    int check = db.Execute("update Leads set status=2, communication='" + comment + "' where id=" + id);
-                    if (check > 0)
+                    DynamicParameters parameter = new DynamicParameters();
+                    parameter.Add("@id", id, DbType.Int32);
+                    parameter.Add("@comment", comment, DbType.String);
+
+                    int affectedRows = db.Execute(sql, parameter);
+                    if (affectedRows > 0)
                     {
                         exit_code = 0;
                     } else
