@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace dotnet3._1_in_docker.Controllers
 {
@@ -21,9 +20,6 @@ namespace dotnet3._1_in_docker.Controllers
             Console.WriteLine("* Exitcode: " + exit_code);
             if (exit_code == 0)
             {
-                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
-                 var response = new {status="Contacted", communication=leadComm.communication}
-                 */
                 APIResponse_with_comms response = new APIResponse_with_comms();
                 response.status = "Contacted";
                 response.communication = leadComm.communication;
@@ -31,9 +27,6 @@ namespace dotnet3._1_in_docker.Controllers
             }
             else
             {
-                /* MOHLO BYT UDELANO TAKTO A APIResponse TRIDY ODSTRANENY
-                 var response = new {status="failure", reason="invalid input"}
-                 */
                 APIResponse_with_reason response = new APIResponse_with_reason();
                 response.status = "failure";
                 response.reason = "invalid input";

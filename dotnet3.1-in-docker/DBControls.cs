@@ -7,13 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-// System.Data.SQLite.SQLiteException      SQL EXCEPTION
-// exil_code:   0=succes | -1=failure
-
-/*
-
- */
-
 namespace dotnet3._1_in_docker
 {
     public class DBControls

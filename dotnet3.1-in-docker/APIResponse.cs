@@ -4,11 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-/*
- mohlo by být kompletně odstraněno a nahrazeno
-    var response = new {...}
- */
-
 namespace dotnet3._1_in_docker
 {
     public class APIResponse
